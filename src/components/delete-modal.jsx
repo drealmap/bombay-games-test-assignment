@@ -1,6 +1,6 @@
 import React from "react";
 
-export const DeleteModal = ({ toggleDelete, handleCustomerDelete, customerData }) => {
+export const DeleteModal = ({ toggleDelete, handleDelete, data, user, }) => {
   return (
     <div className="fixed top-0 bottom-0 left-0 right-0 w-screen h-screen ">
       <div
@@ -9,13 +9,13 @@ export const DeleteModal = ({ toggleDelete, handleCustomerDelete, customerData }
       ></div>
       <div className="w-full absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] max-w-md">
         <div className="px-8 pt-6 pb-8 mb-4 bg-white rounded shadow-md">
-          <h2 className="mb-10">Are you sure you want to delete this Customer?</h2>
+          <h2 className="mb-10">Are you sure you want to delete this {user}?</h2>
 
           <div className="flex justify-between ">
             <button
               className="px-4 py-2 font-bold text-white bg-red-400 rounded hover:bg-red-700 focus:outline-none focus:shadow-outline"
               type="button"
-              onClick={() => handleCustomerDelete(customerData._id)}
+              onClick={() => {handleDelete(data._id)}}
             >
               Yes, Delete
             </button>

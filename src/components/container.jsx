@@ -67,6 +67,19 @@ export const Container = () => {
     }
   };
 
+  const handleGameSearch = (e) => {
+    e.preventDefault();
+    if (e.target.value === "") {
+      setGamesList(games);
+    }
+    if (e.target.value !== "") {
+      setGamesList(filterItems(games, e.target.value));
+      if (filterItems(gamesList, e.target.value).length === 0) {
+        toast.error("No result found");
+      }
+    }
+  };
+
   useEffect(() => {
     if (customers) {
       console.log(customers);
@@ -77,6 +90,7 @@ export const Container = () => {
   useEffect(() => {
     if (games) {
       setGamesList(games);
+      console.log(games)
     }
   }, [games]);
 
@@ -120,22 +134,23 @@ export const Container = () => {
             </p>
           </div>
         </div>
-        <VictoryPie
+        {/* <VictoryPie
           data={[
             { x: "Cats", y: 35 },
             { x: "Dogs", y: 40 },
             { x: "Birds", y: 55 },
           ]}
+         
           width={350}
           height={200}
           animate={{
             duration: 2000,
           }}
-        />
+        /> */}
 
-        <h2 className="text-base font-bold text-center sm:text-lg">
+        {/* <h2 className="text-base font-bold text-center sm:text-lg">
           Game Category by Popularity
-        </h2>
+        </h2> */}
 
         {isCustomersLoading ? (
           <MidSpinner />
@@ -159,6 +174,7 @@ export const Container = () => {
           numberOfGames={gamesList.length}
           games={gamesList}
           handleCustomerSearch={handleCustomerSearch}
+          handleGameSearch={handleGameSearch}
         />
       </div>
 

@@ -11,7 +11,7 @@ export const Customers = ({
   setEdit,
   toggleDelete,
   handleCustomerSearch,
-  isCustomersloading,
+  setIsgame,
   setCustomerDetails,
 }) => {
   return (
@@ -124,6 +124,7 @@ export const Customers = ({
               <MdDelete
                 onClick={() => {
                   setEdit(true);
+                  setIsgame(false);
                   prePopulate(_id);
                   toggleDelete();
                 }}

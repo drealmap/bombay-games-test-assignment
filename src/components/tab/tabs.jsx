@@ -3,24 +3,29 @@ import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import { Customers } from "../customers";
 import { Games } from "../games";
 import { AddCustomerModal } from "../add-customer-modal";
+import { AddGameModal } from "../add-game-modal";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { DeleteModal } from "../delete-modal";
 import { MidSpinner } from "../loader";
 import { BASE_API_URL } from "../../utils/constants";
+import { toast } from "react-hot-toast";
 
 export const TabComponent = ({
   customers,
   games,
   handleCustomerSearch,
+  handleGameSearch,
   numberOfCustomers,
   numberOfGames,
   isCustomersLoading,
 }) => {
   const [firstTabActive, setFirstTabActive] = useState(true);
   const [customerModal, setCustomerModal] = useState(false);
+  const [gameModal, setGameModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
+  const [isGame, setIsGame] = useState(false);
   const [customerData, setCustomerData] = useState({
     name: "",
     email: "",
@@ -31,13 +36,19 @@ export const TabComponent = ({
     sound: true,
     _id: "",
   });
+  const [gameData, setGameData] = useState({
+    name: "",
+    description: "",
+    publisher: "",
+    category: "Arcade",
+    _id: "",
+  });
   const [edit, setEdit] = useState(false);
-  
 
   const prePopulate = async (userId) => {
     if (edit === true) {
-      setLoading(true)
-      await fetch(`http://localhost:3000/api/users/${userId}`, {
+      setLoading(true);
+      await fetch(`${BASE_API_URL}/api/users/${userId}`, {
         method: "GET",
         // body: JSON.stringify(user),
         headers: {
@@ -58,12 +69,12 @@ export const TabComponent = ({
             sound: result.settings.sound_enabled === false ? "False" : "True",
             _id: result._id,
           });
-          setLoading(false)
+          setLoading(false);
         })
         .catch((error) => {
           console.error(error);
         });
-        setLoading(false)
+      setLoading(false);
     }
     // const {
     //   isLoading,
@@ -80,6 +91,34 @@ export const TabComponent = ({
     //   },
     // });
   };
+  const prePopulateGame = async (userId) => {
+    if (edit === true) {
+      setLoading(true);
+      await fetch(`${BASE_API_URL}/api/games/${userId}`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => response.json())
+        .then((result) => {
+          console.log(result);
+          setGameData({
+            name: result.name,
+            description: result.description,
+            publisher: result.publisher,
+            category: result.category,
+            _id: result._id,
+          });
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+      setLoading(false);
+    }
+  };
 
   const toggleCustomerModal = () => {
     if (customerModal === false) {
@@ -94,6 +133,20 @@ export const TabComponent = ({
         language: "English",
         music: true,
         sound: true,
+      });
+    }
+  };
+  const toggleGameModal = () => {
+    if (gameModal === false) {
+      setGameModal(true);
+    } else {
+      setGameModal(false);
+      setGameData({
+        name: "",
+        description: "",
+        publisher: "",
+        category: "Arcade",
+        _id: "",
       });
     }
   };
@@ -116,7 +169,7 @@ export const TabComponent = ({
         sound_enabled: customerData.sound === "False" ? false : true,
       },
     };
-    await fetch("http://localhost:3000/api/users", {
+    await fetch(`${BASE_API_URL}/api/users`, {
       method: "POST",
       body: JSON.stringify(user),
       headers: {
@@ -133,7 +186,36 @@ export const TabComponent = ({
       });
   };
 
+  const handleAddGame = async (e) => {
+    e.preventDefault();
+
+    const user = {
+      name: gameData.name,
+      publisher: gameData.publisher,
+      description: gameData.description,
+      category: gameData.category,
+    };
+    await fetch(`${BASE_API_URL}/api/games`, {
+      method: "POST",
+      body: JSON.stringify(user),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+        toast.success("Game added successfully")
+        setTimeout(window.location.reload(), 4000)
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   const handleEditCustomer = async (userId) => {
+    setLoading(true);
     const user = {
       name: customerData.name,
       email: customerData.email,
@@ -156,6 +238,37 @@ export const TabComponent = ({
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
+        setLoading(false);
+        toast.success("User details saved");
+        setTimeout(window.location.reload(), 3000);
+        toggleCustomerModal();
+      })
+
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const handleEditGame = async (userId) => {
+    const user = {
+      name: gameData.name,
+      publisher: gameData.publisher,
+      description: gameData.description,
+      category: gameData.category,
+    };
+    await fetch(`${BASE_API_URL}/api/games/${userId}`, {
+      method: "PUT",
+      body: JSON.stringify(user),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+        toast.success("Game saved successfully");
+        window.location.reload();
       })
       .catch((error) => {
         console.error(error);
@@ -174,6 +287,27 @@ export const TabComponent = ({
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
+        toast.success("User deleted successfully");
+        toggleDelete();
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const handleGameDelete = async (userId) => {
+    await fetch(`${BASE_API_URL}/api/games/${userId}`, {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+        toast.success("Game deleted successfully");
+        setTimeout(window.location.reload(), 4000);
         toggleDelete();
       })
       .catch((error) => {
@@ -244,7 +378,7 @@ export const TabComponent = ({
               setEdit={setEdit}
               toggleDelete={toggleDelete}
               handleCustomerSearch={handleCustomerSearch}
-              // isCustomersLoading={isCustomersLoading}
+              setIsGame={setIsGame}
             />
           )}
 
@@ -262,13 +396,33 @@ export const TabComponent = ({
           {deleteModal ? (
             <DeleteModal
               toggleDelete={toggleDelete}
-              handleCustomerDelete={handleCustomerDelete}
-              customerData={customerData}
+              handleDelete={isGame ? handleGameDelete : handleCustomerDelete}
+              data={isGame ? gameData : customerData}
+              user={isGame ? "game" : "customer"}
             />
           ) : null}
         </TabPanel>
         <TabPanel>
-          <Games allGames={games} />
+          <Games
+            allGames={games}
+            handleGameSearch={handleGameSearch}
+            toggleGameModal={toggleGameModal}
+            prePopulateGame={prePopulateGame}
+            setEdit={setEdit}
+            toggleDelete={toggleDelete}
+            setIsGame={setIsGame}
+          />
+          {gameModal ? (
+            <AddGameModal
+              toggleModal={toggleGameModal}
+              handleAddGame={handleAddGame}
+              gameData={gameData}
+              setGameData={setGameData}
+              handleEditGame={handleEditGame}
+              edit={edit}
+              loading={loading}
+            />
+          ) : null}
         </TabPanel>
       </Tabs>
     </div>
