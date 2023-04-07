@@ -21,7 +21,9 @@ export const TabComponent = ({
   numberOfGames,
   isCustomersLoading,
   handleFilterbyCategory,
-filterCustomerDate
+  filterCustomerDate,
+  filterGameDate,
+  handleFilterHighScore,
 }) => {
   const [firstTabActive, setFirstTabActive] = useState(true);
   const [customerModal, setCustomerModal] = useState(false);
@@ -274,7 +276,7 @@ filterCustomerDate
       .then((result) => {
         console.log(result);
         toast.success("Game saved successfully");
-        setTimeout(window.location.reload(), 5000)
+        setTimeout(window.location.reload(), 5000);
       })
       .catch((error) => {
         console.error(error);
@@ -294,7 +296,7 @@ filterCustomerDate
       .then((result) => {
         console.log(result);
         toast.success("User deleted successfully");
-        setTimeout(window.location.reload(), 5000)
+        setTimeout(window.location.reload(), 5000);
         toggleCustomerDelete();
       })
       .catch((error) => {
@@ -385,6 +387,7 @@ filterCustomerDate
               toggleCustomerDelete={toggleCustomerDelete}
               handleCustomerSearch={handleCustomerSearch}
               filterCustomerDate={filterCustomerDate}
+              handleFilterHighScore={handleFilterHighScore}
             />
           )}
 
@@ -417,6 +420,7 @@ filterCustomerDate
             setEdit={setEdit}
             toggleGameDelete={toggleGameDelete}
             handleFilterbyCategory={handleFilterbyCategory}
+            filterGameDate={filterGameDate}
           />
           {deleteGameModal ? (
             <DeleteGameModal

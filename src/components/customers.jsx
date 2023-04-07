@@ -12,6 +12,7 @@ export const Customers = ({
   toggleCustomerDelete,
   handleCustomerSearch,
   filterCustomerDate,
+  handleFilterHighScore,
   setCustomerDetails,
 }) => {
   return (
@@ -56,12 +57,12 @@ export const Customers = ({
           <option value={"thisWeek"}>This week</option>
         </SelectField>
         
-        <SelectField>
+        <SelectField onChange={handleFilterHighScore}>
           <option value="" selected>
             Filter by high score range
           </option>
-          <option value="">Below 5000</option>
-          <option value="">Above 5000</option>
+          <option value="<">Below 5000</option>
+          <option value=">">Above 5000</option>
         </SelectField>
       </div>
       <div className=" grid grid-cols-12 text-xs md:text-sm font-switzer leading-[18px] text-[#5F6D7E] py-3 border-y border-[#EAEBF0] ">

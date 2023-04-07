@@ -11,6 +11,7 @@ export const Games = ({
   toggleGameDelete,
   handleGameSearch,
   handleFilterbyCategory,
+  filterGameDate,
 }) => {
   return (
     <div
@@ -47,15 +48,13 @@ export const Games = ({
           />
         </div>
         <SelectField
-          // onChange={({ target: { value } }) => {
-          //   setCustomerDateFilter(value);
-          // }}
+          onChange={filterGameDate}
         >
           <option value="" selected>
             Filter by date
           </option>
-          <option value="">Last week</option>
-          <option value="">This week</option>
+          <option value="lastWeek">Last week</option>
+          <option value="thisWeek">This week</option>
         </SelectField>
         <SelectField onChange={handleFilterbyCategory}>
           <option value="" selected>

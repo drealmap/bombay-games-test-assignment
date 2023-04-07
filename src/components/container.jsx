@@ -18,11 +18,12 @@ import { BASE_API_URL } from "../utils/constants";
 export const Container = () => {
   const [customersList, setCustomersList] = useState([]);
   const [gamesList, setGamesList] = useState([]);
-  const [customersByDate, setCustomersByDate] = useState(false);
   const [newUsersThisWeek, setNewUsersThisWeek] = useState(0);
-  const [newGamesThisWeek, setNewGamesThisWeek] = useState(0)
-  const [usersAddedLastWeek, setUsersAddedLastWeek] = useState([])
-  const [usersAddedThisWeek, setUsersAddedThisWeek] = useState([])
+  const [newGamesThisWeek, setNewGamesThisWeek] = useState(0);
+  const [usersAddedLastWeek, setUsersAddedLastWeek] = useState([]);
+  const [usersAddedThisWeek, setUsersAddedThisWeek] = useState([]);
+  const [gamesAddedLastWeek, setGamesAddedLastWeek] = useState([]);
+  const [gamesAddedThisWeek, setGamesAddedThisWeek] = useState([]);
 
   const {
     isLoading: isCustomersLoading,
@@ -56,16 +57,38 @@ export const Container = () => {
       el.name.toLowerCase().includes(query.toLowerCase())
     );
   }
-  function filterHighScore(arr, query) {
+  function filterLowerScore(arr, query) {
     return arr.filter((el) =>
-      el.name.toLowerCase().includes(query.toLowerCase())
+      el.high_score < query
     );
   }
-  function filterDate(arr, query) {
+  function filterHigherScore(arr, query) {
     return arr.filter((el) =>
-      el.name.toLowerCase().includes(query.toLowerCase())
+      el.high_score > query
     );
   }
+
+  const handleFilterHighScore = (e) => {
+    e.preventDefault();
+    if (e.target.value === "") {
+      setCustomersList(customers);
+    }
+    if (e.target.value === "<") {
+      setCustomersList(filterLowerScore(customers, 5000));
+      if (filterLowerScore(customers, 5000).length === 0) {
+        toast.error("No result found");
+       
+      }
+    }
+    if (e.target.value === ">") {
+      setCustomersList(filterHigherScore(customers, 5000));
+      if (filterHigherScore(customers, 5000).length === 0) {
+        toast.error("No result found");
+        
+      }
+    }
+  }
+
 
   const filterCustomerDate = (e) => {
     e.preventDefault();
@@ -84,7 +107,26 @@ export const Container = () => {
         toast.error("No result found");
       }
     }
-  }
+  };
+
+  const filterGameDate = (e) => {
+    e.preventDefault();
+    if (e.target.value === "") {
+      setGamesList(games);
+    }
+    if (e.target.value === "lastWeek") {
+      setGamesList(gamesAddedLastWeek);
+      if (gamesAddedLastWeek.length === 0) {
+        toast.error("No result found");
+      }
+    }
+    if (e.target.value === "thisWeek") {
+      setGamesList(gamesAddedThisWeek);
+      if (gamesAddedThisWeek.length === 0) {
+        toast.error("No result found");
+      }
+    }
+  };
 
   function filterCategory(arr, query) {
     return arr.filter((el) =>
@@ -141,7 +183,7 @@ export const Container = () => {
   useEffect(() => {
     if (games) {
       setGamesList(games);
-      console.log(games)
+      console.log(games);
     }
   }, [games]);
 
@@ -159,20 +201,28 @@ export const Container = () => {
         const userDate = new Date(user.date);
         return userDate >= weekStart && userDate <= today;
       });
+      const newGamesThisWeek = games?.filter((game) => {
+        const gameDate = new Date(game.releaseDate);
+        return gameDate >= weekStart && gameDate <= today;
+      });
       const usersAddedLastWeek = users?.filter((user) => {
         const userDate = new Date(user.date);
         return !userDate >= weekStart && userDate <= today;
       });
+      const gamesAddedLastWeek = games?.filter((game) => {
+        const gameDate = new Date(game.date);
+        return !gameDate >= weekStart && gameDate <= today;
+      });
 
       setNewUsersThisWeek(newUsersThisWeek?.length);
-      setUsersAddedThisWeek(newUsersThisWeek)
-      setUsersAddedLastWeek(usersAddedLastWeek)
-      console.log(usersAddedLastWeek)
+      setUsersAddedThisWeek(newUsersThisWeek);
+      setUsersAddedLastWeek(usersAddedLastWeek);
+      setGamesAddedLastWeek(gamesAddedLastWeek)
+      setGamesAddedThisWeek(newGamesThisWeek)
     }
 
     fetchUserData();
   }, [customers, customersList]);
-
 
   useEffect(() => {
     async function fetchUserData() {
@@ -232,22 +282,27 @@ export const Container = () => {
           Game Category by Popularity
         </h2> */}
 
-        {isCustomersLoading ? (
-          <MidSpinner />
-        ) : (
-          <div className="flex flex-col gap-4 mt-3 sm:mt-5 lg:flex-row font-switzer ">
+        <div className="flex flex-col gap-4 mt-3 sm:mt-5 lg:flex-row font-switzer ">
+          {isCustomersLoading ? (
+            <MidSpinner />
+          ) : (
             <BasicCard
               newUsersThisWeek={newUsersThisWeek}
-              customers={customersList}
+              customers={customers}
               str={"Customers"}
             />
+          )}
+
+          {isGamesLoading ? (
+            <MidSpinner />
+          ) : (
             <BasicCard
               newUsersThisWeek={newGamesThisWeek}
-              customers={gamesList}
+              customers={games}
               str={"Games"}
             />
-          </div>
-        )}
+          )}
+        </div>
 
         <TabComponent
           customers={customersList}
@@ -259,6 +314,8 @@ export const Container = () => {
           handleGameSearch={handleGameSearch}
           handleFilterbyCategory={handleFilterbyCategory}
           filterCustomerDate={filterCustomerDate}
+          filterGameDate={filterGameDate}
+          handleFilterHighScore={handleFilterHighScore}
         />
       </div>
 
