@@ -20,6 +20,7 @@ export const Container = () => {
   const [gamesList, setGamesList] = useState([]);
   const [customersByDate, setCustomersByDate] = useState(false);
   const [newUsersThisWeek, setNewUsersThisWeek] = useState(0);
+  const [newGamesThisWeek, setNewGamesThisWeek] = useState(0)
 
   const {
     isLoading: isCustomersLoading,
@@ -115,6 +116,28 @@ export const Container = () => {
     fetchUserData();
   }, [customers, customersList]);
 
+
+  useEffect(() => {
+    async function fetchUserData() {
+      const users = games;
+      const today = new Date();
+      const weekStart = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate() - today.getDay()
+      );
+
+      const newGamesThisWeek = users?.filter((user) => {
+        const userDate = new Date(user.releaseDate);
+        return userDate >= weekStart && userDate <= today;
+      });
+
+      setNewGamesThisWeek(newGamesThisWeek?.length);
+    }
+
+    fetchUserData();
+  }, [games, gamesList]);
+
   return (
     <div className=" overflow-x-hidden bg-[#FAFBFC] h-full min-h-screen p-6 lg:ml-[6vw]">
       <div className="flex font-switzer font-medium text-sm text-[#5F6D7E] items-center">
@@ -159,10 +182,12 @@ export const Container = () => {
             <BasicCard
               newUsersThisWeek={newUsersThisWeek}
               customers={customersList}
+              str={"Customers"}
             />
             <BasicCard
-              newUsersThisWeek={newUsersThisWeek}
-              customers={customers}
+              newUsersThisWeek={newGamesThisWeek}
+              customers={gamesList}
+              str={"Games"}
             />
           </div>
         )}

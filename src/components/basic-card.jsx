@@ -1,7 +1,7 @@
 import React from "react";
 import { MdOutlineArrowUpward } from "react-icons/md";
 
-export default function BasicCard({ newUsersThisWeek, customers }) {
+export default function BasicCard({ newUsersThisWeek, customers, str }) {
   return (
     <div className="flex items-center justify-between w-full px-4 py-8 bg-white rounded-lg lg:w-64 ">
       <div className="flex flex-col gap-2.5">
@@ -9,7 +9,7 @@ export default function BasicCard({ newUsersThisWeek, customers }) {
           {newUsersThisWeek}
         </div>
         <div className="text-sm text-black opacity-50 lg:text-base font-switzer">
-          New Users Added This Week
+          New {str} Added This Week
         </div>
       </div>
       <div className="flex gap-1 p-1 bg-[#27AE60] rounded-sm bg-opacity-10">
