@@ -1,5 +1,6 @@
 # bombay-games-test-assignment
 
+
 ## To run this application locally:
 
 ### Clone this app to your local directory
@@ -8,3 +9,8 @@
 ### Run `npm install` 
 ### Then run `npm run dev` to start the app on a local server
 ### View the app on the provided url
+
+
+
+Or alternatively visit the live link:
+### https://bombay-games-test-assignment.vercel.app/
