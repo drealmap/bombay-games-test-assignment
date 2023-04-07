@@ -20,6 +20,8 @@ export const TabComponent = ({
   numberOfCustomers,
   numberOfGames,
   isCustomersLoading,
+  handleFilterbyCategory,
+filterCustomerDate
 }) => {
   const [firstTabActive, setFirstTabActive] = useState(true);
   const [customerModal, setCustomerModal] = useState(false);
@@ -382,6 +384,7 @@ export const TabComponent = ({
               setEdit={setEdit}
               toggleCustomerDelete={toggleCustomerDelete}
               handleCustomerSearch={handleCustomerSearch}
+              filterCustomerDate={filterCustomerDate}
             />
           )}
 
@@ -413,6 +416,7 @@ export const TabComponent = ({
             prePopulateGame={prePopulateGame}
             setEdit={setEdit}
             toggleGameDelete={toggleGameDelete}
+            handleFilterbyCategory={handleFilterbyCategory}
           />
           {deleteGameModal ? (
             <DeleteGameModal

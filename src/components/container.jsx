@@ -21,6 +21,8 @@ export const Container = () => {
   const [customersByDate, setCustomersByDate] = useState(false);
   const [newUsersThisWeek, setNewUsersThisWeek] = useState(0);
   const [newGamesThisWeek, setNewGamesThisWeek] = useState(0)
+  const [usersAddedLastWeek, setUsersAddedLastWeek] = useState([])
+  const [usersAddedThisWeek, setUsersAddedThisWeek] = useState([])
 
   const {
     isLoading: isCustomersLoading,
@@ -54,6 +56,41 @@ export const Container = () => {
       el.name.toLowerCase().includes(query.toLowerCase())
     );
   }
+  function filterHighScore(arr, query) {
+    return arr.filter((el) =>
+      el.name.toLowerCase().includes(query.toLowerCase())
+    );
+  }
+  function filterDate(arr, query) {
+    return arr.filter((el) =>
+      el.name.toLowerCase().includes(query.toLowerCase())
+    );
+  }
+
+  const filterCustomerDate = (e) => {
+    e.preventDefault();
+    if (e.target.value === "") {
+      setCustomersList(customers);
+    }
+    if (e.target.value === "lastWeek") {
+      setCustomersList(usersAddedLastWeek);
+      if (usersAddedLastWeek.length === 0) {
+        toast.error("No result found");
+      }
+    }
+    if (e.target.value === "thisWeek") {
+      setCustomersList(usersAddedThisWeek);
+      if (usersAddedThisWeek.length === 0) {
+        toast.error("No result found");
+      }
+    }
+  }
+
+  function filterCategory(arr, query) {
+    return arr.filter((el) =>
+      el.category.toLowerCase().includes(query.toLowerCase())
+    );
+  }
 
   const handleCustomerSearch = (e) => {
     e.preventDefault();
@@ -76,6 +113,19 @@ export const Container = () => {
     if (e.target.value !== "") {
       setGamesList(filterItems(games, e.target.value));
       if (filterItems(gamesList, e.target.value).length === 0) {
+        toast.error("No result found");
+      }
+    }
+  };
+
+  const handleFilterbyCategory = (e) => {
+    e.preventDefault();
+    if (e.target.value === "") {
+      setGamesList(games);
+    }
+    if (e.target.value !== "") {
+      setGamesList(filterCategory(games, e.target.value));
+      if (filterCategory(gamesList, e.target.value).length === 0) {
         toast.error("No result found");
       }
     }
@@ -109,8 +159,15 @@ export const Container = () => {
         const userDate = new Date(user.date);
         return userDate >= weekStart && userDate <= today;
       });
+      const usersAddedLastWeek = users?.filter((user) => {
+        const userDate = new Date(user.date);
+        return !userDate >= weekStart && userDate <= today;
+      });
 
       setNewUsersThisWeek(newUsersThisWeek?.length);
+      setUsersAddedThisWeek(newUsersThisWeek)
+      setUsersAddedLastWeek(usersAddedLastWeek)
+      console.log(usersAddedLastWeek)
     }
 
     fetchUserData();
@@ -200,6 +257,8 @@ export const Container = () => {
           games={gamesList}
           handleCustomerSearch={handleCustomerSearch}
           handleGameSearch={handleGameSearch}
+          handleFilterbyCategory={handleFilterbyCategory}
+          filterCustomerDate={filterCustomerDate}
         />
       </div>
 

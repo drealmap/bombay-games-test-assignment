@@ -11,6 +11,7 @@ export const Customers = ({
   setEdit,
   toggleCustomerDelete,
   handleCustomerSearch,
+  filterCustomerDate,
   setCustomerDetails,
 }) => {
   return (
@@ -45,25 +46,16 @@ export const Customers = ({
           />
         </div>
         <SelectField
-          onChange={({ target: { value } }) => {
-            setCustomerDateFilter(value);
-          }}
+        
+          onChange={filterCustomerDate}
         >
           <option value="" selected>
             Filter by date
           </option>
-          <option value="">Last week</option>
-          <option value="">This week</option>
+          <option value={"lastWeek"}>Last week</option>
+          <option value={"thisWeek"}>This week</option>
         </SelectField>
-        <SelectField>
-          <option value="" selected>
-            Filter by language
-          </option>
-          <option value="">English</option>
-          <option value="">French</option>
-          <option value="">Spanish</option>
-          <option value="">Portuguese</option>
-        </SelectField>
+        
         <SelectField>
           <option value="" selected>
             Filter by high score range

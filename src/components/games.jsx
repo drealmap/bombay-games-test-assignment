@@ -10,6 +10,7 @@ export const Games = ({
   setEdit,
   toggleGameDelete,
   handleGameSearch,
+  handleFilterbyCategory,
 }) => {
   return (
     <div
@@ -46,9 +47,9 @@ export const Games = ({
           />
         </div>
         <SelectField
-          onChange={({ target: { value } }) => {
-            setCustomerDateFilter(value);
-          }}
+          // onChange={({ target: { value } }) => {
+          //   setCustomerDateFilter(value);
+          // }}
         >
           <option value="" selected>
             Filter by date
@@ -56,21 +57,17 @@ export const Games = ({
           <option value="">Last week</option>
           <option value="">This week</option>
         </SelectField>
-        <SelectField>
+        <SelectField onChange={handleFilterbyCategory}>
           <option value="" selected>
             Filter by Category
           </option>
-          <option value="">English</option>
-          <option value="">French</option>
-          <option value="">Spanish</option>
-          <option value="">Portuguese</option>
-        </SelectField>
-        <SelectField>
-          <option value="" selected>
-            Filter by high score range
-          </option>
-          <option value="">Below 5000</option>
-          <option value="">Above 5000</option>
+          <option>Arcade </option>
+          <option>Action </option>
+          <option>Adventure </option>
+          <option>Casino</option>
+          <option>Racing</option>
+          <option>Sports</option>
+          <option>Strategy</option>
         </SelectField>
       </div>
       <div className=" grid grid-cols-12 text-xs md:text-sm font-switzer leading-[18px] text-[#5F6D7E] py-3 border-y border-[#EAEBF0] ">
