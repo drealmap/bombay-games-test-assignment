@@ -10,6 +10,7 @@ import { DeleteModal } from "../delete-modal";
 import { MidSpinner } from "../loader";
 import { BASE_API_URL } from "../../utils/constants";
 import { toast } from "react-hot-toast";
+import { DeleteGameModal } from "../delete-game";
 
 export const TabComponent = ({
   customers,
@@ -23,9 +24,9 @@ export const TabComponent = ({
   const [firstTabActive, setFirstTabActive] = useState(true);
   const [customerModal, setCustomerModal] = useState(false);
   const [gameModal, setGameModal] = useState(false);
-  const [deleteModal, setDeleteModal] = useState(false);
+  const [deleteCustomerModal, setDeleteCustomerModal] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [isGame, setIsGame] = useState(false);
+  const [deleteGameModal, setDeleteGameModal] = useState(false);
   const [customerData, setCustomerData] = useState({
     name: "",
     email: "",
@@ -151,8 +152,11 @@ export const TabComponent = ({
     }
   };
 
-  const toggleDelete = () => {
-    setDeleteModal(!deleteModal);
+  const toggleCustomerDelete = () => {
+    setDeleteCustomerModal(!deleteCustomerModal);
+  };
+  const toggleGameDelete = () => {
+    setDeleteGameModal(!deleteGameModal);
   };
 
   const handleAddCustomer = async (e) => {
@@ -206,8 +210,8 @@ export const TabComponent = ({
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
-        toast.success("Game added successfully")
-        setTimeout(window.location.reload(), 4000)
+        toast.success("Game added successfully");
+        setTimeout(window.location.reload(), 5000);
       })
       .catch((error) => {
         console.error(error);
@@ -240,7 +244,7 @@ export const TabComponent = ({
         console.log(result);
         setLoading(false);
         toast.success("User details saved");
-        setTimeout(window.location.reload(), 3000);
+        setTimeout(window.location.reload(), 5000);
         toggleCustomerModal();
       })
 
@@ -268,7 +272,7 @@ export const TabComponent = ({
       .then((result) => {
         console.log(result);
         toast.success("Game saved successfully");
-        window.location.reload();
+        setTimeout(window.location.reload(), 5000)
       })
       .catch((error) => {
         console.error(error);
@@ -288,7 +292,8 @@ export const TabComponent = ({
       .then((result) => {
         console.log(result);
         toast.success("User deleted successfully");
-        toggleDelete();
+        setTimeout(window.location.reload(), 5000)
+        toggleCustomerDelete();
       })
       .catch((error) => {
         console.error(error);
@@ -308,7 +313,6 @@ export const TabComponent = ({
         console.log(result);
         toast.success("Game deleted successfully");
         setTimeout(window.location.reload(), 4000);
-        toggleDelete();
       })
       .catch((error) => {
         console.error(error);
@@ -376,9 +380,8 @@ export const TabComponent = ({
               toggleCustomerModal={toggleCustomerModal}
               prePopulate={prePopulate}
               setEdit={setEdit}
-              toggleDelete={toggleDelete}
+              toggleCustomerDelete={toggleCustomerDelete}
               handleCustomerSearch={handleCustomerSearch}
-              setIsGame={setIsGame}
             />
           )}
 
@@ -393,12 +396,12 @@ export const TabComponent = ({
               loading={loading}
             />
           ) : null}
-          {deleteModal ? (
+          {deleteCustomerModal ? (
             <DeleteModal
-              toggleDelete={toggleDelete}
-              handleDelete={isGame ? handleGameDelete : handleCustomerDelete}
-              data={isGame ? gameData : customerData}
-              user={isGame ? "game" : "customer"}
+              toggleCustomerDelete={toggleCustomerDelete}
+              handleDelete={handleCustomerDelete}
+              customerData={customerData}
+              user={"customer"}
             />
           ) : null}
         </TabPanel>
@@ -409,9 +412,15 @@ export const TabComponent = ({
             toggleGameModal={toggleGameModal}
             prePopulateGame={prePopulateGame}
             setEdit={setEdit}
-            toggleDelete={toggleDelete}
-            setIsGame={setIsGame}
+            toggleGameDelete={toggleGameDelete}
           />
+          {deleteGameModal ? (
+            <DeleteGameModal
+              toggleGamedelete={toggleGameDelete}
+              handleGameDelete={handleGameDelete}
+              gameData={gameData}
+            />
+          ) : null}
           {gameModal ? (
             <AddGameModal
               toggleModal={toggleGameModal}

@@ -8,9 +8,8 @@ export const Games = ({
   toggleGameModal,
   prePopulateGame,
   setEdit,
-  toggleDelete,
+  toggleGameDelete,
   handleGameSearch,
-  setIsGame,
 }) => {
   return (
     <div
@@ -120,9 +119,8 @@ export const Games = ({
               <MdDelete
                 onClick={() => {
                   setEdit(true);
-                  setIsGame(true);
                   prePopulateGame(_id);
-                  toggleDelete();
+                  toggleGameDelete();
                 }}
                 className="text-2xl"
                 style={{ color: "red", cursor: "pointer" }}

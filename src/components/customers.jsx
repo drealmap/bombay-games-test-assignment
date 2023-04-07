@@ -9,9 +9,8 @@ export const Customers = ({
   toggleCustomerModal,
   prePopulate,
   setEdit,
-  toggleDelete,
+  toggleCustomerDelete,
   handleCustomerSearch,
-  setIsgame,
   setCustomerDetails,
 }) => {
   return (
@@ -124,9 +123,8 @@ export const Customers = ({
               <MdDelete
                 onClick={() => {
                   setEdit(true);
-                  setIsgame(false);
                   prePopulate(_id);
-                  toggleDelete();
+                  toggleCustomerDelete();
                 }}
                 className="text-2xl"
                 style={{ color: "red", cursor: "pointer" }}
