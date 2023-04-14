@@ -1,29 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
+import { toast } from "react-hot-toast";
+
 import { Customers } from "../customers";
 import { Games } from "../games";
 import { AddCustomerModal } from "../add-customer-modal";
 import { AddGameModal } from "../add-game-modal";
-import axios from "axios";
-import { useQuery } from "@tanstack/react-query";
 import { DeleteModal } from "../delete-modal";
 import { MidSpinner } from "../loader";
 import { BASE_API_URL } from "../../utils/constants";
-import { toast } from "react-hot-toast";
 import { DeleteGameModal } from "../delete-game";
+import { useAllCustomers } from "../../custom-hooks";
 
 export const TabComponent = ({
-  customers,
   games,
-  handleCustomerSearch,
   handleGameSearch,
-  numberOfCustomers,
   numberOfGames,
-  isCustomersLoading,
   handleFilterbyCategory,
-  filterCustomerDate,
   filterGameDate,
-  handleFilterHighScore,
 }) => {
   const [firstTabActive, setFirstTabActive] = useState(true);
   const [customerModal, setCustomerModal] = useState(false);
@@ -49,6 +43,8 @@ export const TabComponent = ({
     _id: "",
   });
   const [edit, setEdit] = useState(false);
+
+  const { customers, isCustomersLoading } = useAllCustomers()
 
   const prePopulate = async (userId) => {
     if (edit === true) {
@@ -81,20 +77,6 @@ export const TabComponent = ({
         });
       setLoading(false);
     }
-    // const {
-    //   isLoading,
-    //   isError,
-    //   data: customer,
-    //   error,
-    // } = useQuery({
-    //   queryKey: ["customers"],
-    //   queryFn: async () => {
-    //     const response = await axios.get(`http://localhost:3000/api/users/${userId}`);
-    //     const data = await response.data;
-    //     console.log('ghdhdg')
-    //     return data;
-    //   },
-    // });
   };
   const prePopulateGame = async (userId) => {
     if (edit === true) {
@@ -349,7 +331,7 @@ export const TabComponent = ({
                   : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
               }  ml-1 py-0.5 px-1.5 rounded-full text-xs font-medium  `}
             >
-              {numberOfCustomers}
+              {customers?.length}
             </span>
           </Tab>
           <Tab
@@ -380,14 +362,10 @@ export const TabComponent = ({
             <MidSpinner />
           ) : (
             <Customers
-              allCustomers={customers}
               toggleCustomerModal={toggleCustomerModal}
               prePopulate={prePopulate}
               setEdit={setEdit}
               toggleCustomerDelete={toggleCustomerDelete}
-              handleCustomerSearch={handleCustomerSearch}
-              filterCustomerDate={filterCustomerDate}
-              handleFilterHighScore={handleFilterHighScore}
             />
           )}
 
