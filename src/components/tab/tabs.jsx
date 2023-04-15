@@ -145,36 +145,6 @@ export const TabComponent = ({
     setDeleteGameModal(!deleteGameModal);
   };
 
-  const handleAddCustomer = async (e) => {
-    e.preventDefault();
-
-    const user = {
-      name: customerData.name,
-      email: customerData.email,
-      address: customerData.address,
-      high_score: customerData.highScore,
-      settings: {
-        language: customerData.language,
-        music_enabled: customerData.music === "False" ? false : true,
-        sound_enabled: customerData.sound === "False" ? false : true,
-      },
-    };
-    await fetch(`${BASE_API_URL}/api/users`, {
-      method: "POST",
-      body: JSON.stringify(user),
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
 
   const handleAddGame = async (e) => {
     e.preventDefault();
@@ -372,7 +342,7 @@ export const TabComponent = ({
           {customerModal ? (
             <AddCustomerModal
               toggleModal={toggleCustomerModal}
-              handleAddCustomer={handleAddCustomer}
+              // handleAddCustomer={handleAddCustomer}
               customerData={customerData}
               setCustomerData={setCustomerData}
               handleEditCustomer={handleEditCustomer}

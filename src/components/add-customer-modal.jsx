@@ -1,19 +1,38 @@
 import React from "react";
 import { AiOutlineDown } from "react-icons/ai";
 import { MidSpinner } from "./loader";
+import { useCreateCustomer } from "../custom-hooks";
 
 export const AddCustomerModal = ({
   toggleModal,
-  handleAddCustomer,
   edit,
   handleEditCustomer,
   customerData,
   setCustomerData,
   loading,
 }) => {
+
+  const { mutate, isCreateCustomerLoading, } = useCreateCustomer()
+
+  const handleAddCustomer = (e) => {
+    e.preventDefault()
+    const user = {
+      name: customerData.name,
+      email: customerData.email,
+      address: customerData.address,
+      high_score: customerData.highScore,
+      settings: {
+        language: customerData.language,
+        music_enabled: customerData.music === "False" ? false : true,
+        sound_enabled: customerData.sound === "False" ? false : true,
+      },
+    };
+    mutate(user)
+  }
+
   return (
     <div className="fixed top-0 bottom-0 left-0 right-0 w-screen h-screen ">
-      {loading ? (
+      {loading || isCreateCustomerLoading ? (
         <MidSpinner />
       ) : (
         <>
