@@ -1,15 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import moment from "moment/moment";
 import { MdDelete } from "react-icons/md";
 import { AiOutlineEdit } from "react-icons/ai";
+import { DeleteModal } from "../../delete-modal";
 
 export const CustomersTable = ({
   customersList,
   setEdit,
   prePopulate,
   toggleCustomerModal,
-  toggleCustomerDelete
 }) => {
+
+  const [deleteModal, setDeleteModal] = useState(false)
+
+  const toggleCustomerDelete = () => {
+    setDeleteModal(!deleteModal);
+  };
+
   // customersList?.map(({ name, email, address, date, _id }) => {
   return customersList?.map(({ name, email, address, date, _id }) => {
     return (
@@ -42,12 +49,18 @@ export const CustomersTable = ({
           <MdDelete
             onClick={() => {
               setEdit(true);
-              prePopulate(_id);
+              // prePopulate(_id);
               toggleCustomerDelete();
             }}
             className="text-2xl"
             style={{ color: "red", cursor: "pointer" }}
           />
+          {deleteModal ? (
+            <DeleteModal
+              toggleCustomerDelete={toggleCustomerDelete}
+              _id={_id}
+            />
+          ) : null}
         </div>
       </div>
     );

@@ -22,7 +22,6 @@ export const TabComponent = ({
   const [firstTabActive, setFirstTabActive] = useState(true);
   const [customerModal, setCustomerModal] = useState(false);
   const [gameModal, setGameModal] = useState(false);
-  const [deleteCustomerModal, setDeleteCustomerModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [deleteGameModal, setDeleteGameModal] = useState(false);
   const [customerData, setCustomerData] = useState({
@@ -138,9 +137,7 @@ export const TabComponent = ({
     }
   };
 
-  const toggleCustomerDelete = () => {
-    setDeleteCustomerModal(!deleteCustomerModal);
-  };
+
   const toggleGameDelete = () => {
     setDeleteGameModal(!deleteGameModal);
   };
@@ -235,26 +232,6 @@ export const TabComponent = ({
       });
   };
 
-  const handleCustomerDelete = async (userId) => {
-    console.log(userId);
-    await fetch(`${BASE_API_URL}/api/users/${userId}`, {
-      method: "DELETE",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result);
-        toast.success("User deleted successfully");
-        setTimeout(window.location.reload(), 5000);
-        toggleCustomerDelete();
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
 
   const handleGameDelete = async (userId) => {
     await fetch(`${BASE_API_URL}/api/games/${userId}`, {
@@ -335,7 +312,6 @@ export const TabComponent = ({
               toggleCustomerModal={toggleCustomerModal}
               prePopulate={prePopulate}
               setEdit={setEdit}
-              toggleCustomerDelete={toggleCustomerDelete}
             />
           )}
 
@@ -348,14 +324,6 @@ export const TabComponent = ({
               handleEditCustomer={handleEditCustomer}
               edit={edit}
               loading={loading}
-            />
-          ) : null}
-          {deleteCustomerModal ? (
-            <DeleteModal
-              toggleCustomerDelete={toggleCustomerDelete}
-              handleDelete={handleCustomerDelete}
-              customerData={customerData}
-              user={"customer"}
             />
           ) : null}
         </TabPanel>
