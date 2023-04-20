@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import { MidSpinner } from "./loader";
 import BasicCard from "./basic-card";
-import { useAllCustomers, useAllGames, useStat } from "../custom-hooks";
+import { useAllCustomers, useAllGames, useStat } from "../../custom-hooks";
 
 export const CardsDisplay = () => {
   const { customers, isCustomersLoading } = useAllCustomers();

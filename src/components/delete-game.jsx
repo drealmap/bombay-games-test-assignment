@@ -1,6 +1,10 @@
 import React from "react";
+import { useDeleteGame } from "../custom-hooks";
 
-export const DeleteGameModal = ({ toggleGameDelete, handleGameDelete, gameData, }) => {
+export const DeleteGameModal = ({ toggleGameDelete, _id  }) => {
+
+  const { mutate } = useDeleteGame(toggleGameDelete)
+
   return (
     <div className="fixed top-0 bottom-0 left-0 right-0 w-screen h-screen ">
       <div
@@ -15,7 +19,7 @@ export const DeleteGameModal = ({ toggleGameDelete, handleGameDelete, gameData, 
             <button
               className="px-4 py-2 font-bold text-white bg-red-400 rounded hover:bg-red-700 focus:outline-none focus:shadow-outline"
               type="button"
-              onClick={() => handleGameDelete(gameData._id)}
+              onClick={() => mutate(_id)}
             >
               Yes, Delete
             </button>

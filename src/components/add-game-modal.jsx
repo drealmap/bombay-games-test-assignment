@@ -1,19 +1,40 @@
 import React from "react";
 import { AiOutlineDown } from "react-icons/ai";
-import { MidSpinner } from "./loader";
+import { MidSpinner } from "./others";
+import { useCreateGame, useEditGame } from "../custom-hooks";
 
 export const AddGameModal = ({
   toggleModal,
-  handleAddGame,
   edit,
-  handleEditGame,
   gameData,
   setGameData,
-  loading,
 }) => {
+
+  const user = {
+    name: gameData.name,
+    publisher: gameData.publisher,
+    description: gameData.description,
+    category: gameData.category,
+  };
+
+  const { mutate, isCreateGameLoading } = useCreateGame(toggleModal);
+  const { editGame, isEditGameLoading } = useEditGame(
+    toggleModal,
+    user
+  );
+
+  const handleAddGame = () => {
+    mutate(user);
+    
+  };
+
+  const handleEditGame = (userId) => {
+    editGame(userId);
+  };
+
   return (
     <div className="fixed top-0 bottom-0 left-0 right-0 w-screen h-screen ">
-      {loading ? (
+      {isEditGameLoading || isCreateGameLoading ? (
         <MidSpinner />
       ) : (
         <>
@@ -24,14 +45,10 @@ export const AddGameModal = ({
           ></div>
           <div className="absolute top-[50%] left-[50%] translate-x-[-50%] overflow-auto h-[80vh] lg:h-full -translate-y-[50%] w-[90vw] max-w-md">
             <form
-              onSubmit={
-                edit
-                  ? (e) => {
-                      e.preventDefault();
-                      handleEditGame(gameData._id);
-                    }
-                  : handleAddGame
-              }
+             onSubmit={(e) => {
+              e.preventDefault();
+              edit ? handleEditGame(gameData._id) : handleAddGame();
+            }}
               className="px-8 pt-6 pb-8 mb-4 bg-white rounded shadow-md"
             >
               <h2 className="mb-5 text-lg">

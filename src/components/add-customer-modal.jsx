@@ -1,6 +1,6 @@
 import React from "react";
 import { AiOutlineDown } from "react-icons/ai";
-import { MidSpinner } from "./loader";
+import { MidSpinner } from "./others";
 import { useCreateCustomer, useEditCustomer } from "../custom-hooks";
 
 export const AddCustomerModal = ({

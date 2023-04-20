@@ -1,28 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
-import { toast } from "react-hot-toast";
+
 
 import { Customers } from "../customers";
 import { Games } from "../games";
 import { AddCustomerModal } from "../add-customer-modal";
 import { AddGameModal } from "../add-game-modal";
-import { MidSpinner } from "../loader";
-import { BASE_API_URL } from "../../utils/constants";
-import { DeleteGameModal } from "../delete-game";
-import { useAllCustomers } from "../../custom-hooks";
+import { MidSpinner } from "../others";
+import { useAllCustomers, useAllGames } from "../../custom-hooks";
 
-export const TabComponent = ({
-  games,
-  handleGameSearch,
-  numberOfGames,
-  handleFilterbyCategory,
-  filterGameDate,
-}) => {
+export const TabComponent = () => {
   const [firstTabActive, setFirstTabActive] = useState(true);
   const [customerModal, setCustomerModal] = useState(false);
   const [gameModal, setGameModal] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [deleteGameModal, setDeleteGameModal] = useState(false);
   const [customerData, setCustomerData] = useState({
     name: "",
     email: "",
@@ -43,36 +33,7 @@ export const TabComponent = ({
   const [edit, setEdit] = useState(false);
 
   const { customers, isCustomersLoading } = useAllCustomers()
-
-  
-  const prePopulateGame = async (userId) => {
-    if (edit === true) {
-      setLoading(true);
-      await fetch(`${BASE_API_URL}/api/games/${userId}`, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      })
-        .then((response) => response.json())
-        .then((result) => {
-          console.log(result);
-          setGameData({
-            name: result.name,
-            description: result.description,
-            publisher: result.publisher,
-            category: result.category,
-            _id: result._id,
-          });
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-      setLoading(false);
-    }
-  };
+  const { games, isGamesLoading } = useAllGames()
 
   const toggleCustomerModal = () => {
     if (customerModal === false) {
@@ -90,6 +51,8 @@ export const TabComponent = ({
       });
     }
   };
+
+
   const toggleGameModal = () => {
     if (gameModal === false) {
       setGameModal(true);
@@ -105,85 +68,6 @@ export const TabComponent = ({
     }
   };
 
-
-  const toggleGameDelete = () => {
-    setDeleteGameModal(!deleteGameModal);
-  };
-
-
-  const handleAddGame = async (e) => {
-    e.preventDefault();
-
-    const user = {
-      name: gameData.name,
-      publisher: gameData.publisher,
-      description: gameData.description,
-      category: gameData.category,
-    };
-    await fetch(`${BASE_API_URL}/api/games`, {
-      method: "POST",
-      body: JSON.stringify(user),
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result);
-        toast.success("Game added successfully");
-        setTimeout(window.location.reload(), 5000);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
-  const handleEditGame = async (userId) => {
-    const user = {
-      name: gameData.name,
-      publisher: gameData.publisher,
-      description: gameData.description,
-      category: gameData.category,
-    };
-    await fetch(`${BASE_API_URL}/api/games/${userId}`, {
-      method: "PUT",
-      body: JSON.stringify(user),
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result);
-        toast.success("Game saved successfully");
-        setTimeout(window.location.reload(), 5000);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
-
-  const handleGameDelete = async (userId) => {
-    await fetch(`${BASE_API_URL}/api/games/${userId}`, {
-      method: "DELETE",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result);
-        toast.success("Game deleted successfully");
-        setTimeout(window.location.reload(), 4000);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
 
   return (
     <div>
@@ -233,7 +117,7 @@ export const TabComponent = ({
                   : "text-red-600 border-b bg-red-100 dark:text-white text-sm"
               }  ml-1 py-0.5 px-1.5 rounded-full text-xs font-medium  `}
             >
-              {numberOfGames}
+              {games?.length}
             </span>
           </Tab>
         </TabList>
@@ -259,31 +143,16 @@ export const TabComponent = ({
         </TabPanel>
         <TabPanel>
           <Games
-            allGames={games}
-            handleGameSearch={handleGameSearch}
             toggleGameModal={toggleGameModal}
-            prePopulateGame={prePopulateGame}
             setEdit={setEdit}
-            toggleGameDelete={toggleGameDelete}
-            handleFilterbyCategory={handleFilterbyCategory}
-            filterGameDate={filterGameDate}
+            setGameData={setGameData}
           />
-          {deleteGameModal ? (
-            <DeleteGameModal
-              toggleGamedelete={toggleGameDelete}
-              handleGameDelete={handleGameDelete}
-              gameData={gameData}
-            />
-          ) : null}
           {gameModal ? (
             <AddGameModal
-              toggleModal={toggleGameModal}
-              handleAddGame={handleAddGame}
+              toggleModal={toggleGameModal}        
               gameData={gameData}
               setGameData={setGameData}
-              handleEditGame={handleEditGame}
               edit={edit}
-              loading={loading}
             />
           ) : null}
         </TabPanel>

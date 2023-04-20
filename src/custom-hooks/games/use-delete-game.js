@@ -5,43 +5,42 @@ import { toast } from "react-hot-toast";
 
 import { BASE_API_URL } from "../../utils/constants";
 
-export function useDeleteCustomer(toggleDeleteModal) {
+export function useDeleteGame(toggleDeleteModal) {
   const queryClient = useQueryClient();
 
   const {
-    isLoading: isDeleteCustomerLoading,
-    error: deleteCustomerError,
+    isLoading: isDeleteGameLoading,
+    error: deleteGameError,
     data,
     mutate,
   } = useMutation(
     {
       mutationFn: async (id) => {
-        const response = await axios.delete(`${BASE_API_URL}/api/users/${id}`);
+        const response = await axios.delete(`${BASE_API_URL}/api/games/${id}`);
         const data = await response.data;
-
         return data;
       },
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries("customers");
+        queryClient.invalidateQueries("games");
       },
     }
   );
 
   useEffect(() => {
     if (data) {
-      toast.success("Customer deleted successfully");
-      queryClient.invalidateQueries("customers");
+      toast.success("Game deleted successfully");
+      queryClient.invalidateQueries("games");
       toggleDeleteModal()
     }
-    if (deleteCustomerError) {
-      toast.error(deleteCustomerError.message);
+    if (deleteGameError) {
+      toast.error(deleteGameError.message);
     }
-  }, [data, deleteCustomerError]);
+  }, [data, deleteGameError]);
 
   return {
     mutate,
-    isDeleteCustomerLoading,
+    isDeleteGameLoading,
   };
 }

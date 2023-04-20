@@ -12,7 +12,6 @@ export function useFilterCustomers() {
 
   useEffect(() => {
     if (customers) {
-      console.log(customers);
       setCustomersList(customers);
     }
   }, [customers]);
