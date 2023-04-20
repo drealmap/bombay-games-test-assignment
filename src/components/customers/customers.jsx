@@ -6,9 +6,8 @@ import { useFilterCustomers } from "../../custom-hooks";
 
 export const Customers = ({
   toggleCustomerModal,
-  prePopulate,
   setEdit,
-  toggleCustomerDelete,
+  setCustomerData
 }) => {
   const {
     customersList,
@@ -63,9 +62,8 @@ export const Customers = ({
       <CustomersTable
         customersList={customersList}
         setEdit={setEdit}
-        prePopulate={prePopulate}
         toggleCustomerModal={toggleCustomerModal}
-        toggleCustomerDelete={toggleCustomerDelete}
+        setCustomerData={setCustomerData}
       />
     </div>
   );

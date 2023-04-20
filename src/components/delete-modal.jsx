@@ -3,7 +3,7 @@ import { useDeleteCustomer } from "../custom-hooks";
 
 export const DeleteModal = ({ toggleCustomerDelete, _id, }) => {
 
-  const { mutate } = useDeleteCustomer()
+  const { mutate } = useDeleteCustomer(toggleCustomerDelete)
 
   return (
     <div className="fixed top-0 bottom-0 left-0 right-0 w-screen h-screen ">

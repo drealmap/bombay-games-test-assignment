@@ -6,7 +6,6 @@ import { Customers } from "../customers";
 import { Games } from "../games";
 import { AddCustomerModal } from "../add-customer-modal";
 import { AddGameModal } from "../add-game-modal";
-import { DeleteModal } from "../delete-modal";
 import { MidSpinner } from "../loader";
 import { BASE_API_URL } from "../../utils/constants";
 import { DeleteGameModal } from "../delete-game";
@@ -45,38 +44,7 @@ export const TabComponent = ({
 
   const { customers, isCustomersLoading } = useAllCustomers()
 
-  const prePopulate = async (userId) => {
-    if (edit === true) {
-      setLoading(true);
-      await fetch(`${BASE_API_URL}/api/users/${userId}`, {
-        method: "GET",
-        // body: JSON.stringify(user),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      })
-        .then((response) => response.json())
-        .then((result) => {
-          console.log(result);
-          setCustomerData({
-            name: result.name,
-            email: result.email,
-            address: result.address,
-            highScore: result.high_score,
-            language: result.settings.language,
-            music: result.settings.music_enabled === false ? "False" : "True",
-            sound: result.settings.sound_enabled === false ? "False" : "True",
-            _id: result._id,
-          });
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-      setLoading(false);
-    }
-  };
+  
   const prePopulateGame = async (userId) => {
     if (edit === true) {
       setLoading(true);
@@ -166,41 +134,6 @@ export const TabComponent = ({
         toast.success("Game added successfully");
         setTimeout(window.location.reload(), 5000);
       })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
-  const handleEditCustomer = async (userId) => {
-    setLoading(true);
-    const user = {
-      name: customerData.name,
-      email: customerData.email,
-      address: customerData.address,
-      high_score: customerData.highScore,
-      settings: {
-        language: customerData.language,
-        music_enabled: customerData.music === "False" ? false : true,
-        sound_enabled: customerData.sound === "False" ? false : true,
-      },
-    };
-    await fetch(`${BASE_API_URL}/api/users/${userId}`, {
-      method: "PUT",
-      body: JSON.stringify(user),
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result);
-        setLoading(false);
-        toast.success("User details saved");
-        setTimeout(window.location.reload(), 5000);
-        toggleCustomerModal();
-      })
-
       .catch((error) => {
         console.error(error);
       });
@@ -310,20 +243,17 @@ export const TabComponent = ({
           ) : (
             <Customers
               toggleCustomerModal={toggleCustomerModal}
-              prePopulate={prePopulate}
               setEdit={setEdit}
+              setCustomerData={setCustomerData}
             />
           )}
 
           {customerModal ? (
             <AddCustomerModal
               toggleModal={toggleCustomerModal}
-              // handleAddCustomer={handleAddCustomer}
               customerData={customerData}
               setCustomerData={setCustomerData}
-              handleEditCustomer={handleEditCustomer}
               edit={edit}
-              loading={loading}
             />
           ) : null}
         </TabPanel>

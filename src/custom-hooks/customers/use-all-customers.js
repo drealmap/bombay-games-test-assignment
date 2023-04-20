@@ -17,7 +17,7 @@ export function useAllCustomers() {
       const data = await response.data;
       return data;
     },
-  });
+  }, {staleTime: 0});
 
   return { isCustomersLoading, customers, isCustomersError, customersError };
 }

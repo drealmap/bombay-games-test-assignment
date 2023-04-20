@@ -5,7 +5,7 @@ import { toast } from "react-hot-toast";
 
 import { BASE_API_URL } from "../../utils/constants";
 
-export function useDeleteCustomer() {
+export function useDeleteCustomer(toggleDeleteModal) {
   const queryClient = useQueryClient();
 
   const {
@@ -25,6 +25,7 @@ export function useDeleteCustomer() {
     {
       onSuccess: () => {
         queryClient.invalidateQueries("customers");
+        console.log("Deleted")
       },
     }
   );
@@ -32,7 +33,8 @@ export function useDeleteCustomer() {
   useEffect(() => {
     if (data) {
       toast.success("Customer deleted successfully");
-      setTimeout(window.location.reload(), 12000);
+      queryClient.invalidateQueries("customers");
+      toggleDeleteModal()
     }
     if (deleteCustomerError) {
       toast.error(deleteCustomerError.message);

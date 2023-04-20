@@ -1,11 +1,14 @@
 import React, {useEffect} from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
 import { BASE_API_URL } from "../../utils/constants";
 import { toast } from "react-hot-toast";
 
-export function useCreateCustomer() {
+export function useCreateCustomer(toggleCustomerModal) {
+
+  const queryClient = useQueryClient()
+
   const 
     {
       isLoading: isCreateCustomerLoading,
@@ -16,7 +19,6 @@ export function useCreateCustomer() {
       mutate
     }
   = useMutation({
-    mutationKey: ["customers"],
     mutationFn: async (customerData) => {
       const response = await axios.post(
         `${BASE_API_URL}/api/users`,
@@ -31,7 +33,8 @@ export function useCreateCustomer() {
   useEffect(() => {
     if (data) {
         toast.success("Customer added successfuly")
-        setTimeout(window.location.reload(), 8000);
+        queryClient.invalidateQueries("customers");
+        toggleCustomerModal()
     }
     if (createCustomerError) {
         toast.error(createCustomerError.message)

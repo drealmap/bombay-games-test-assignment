@@ -1,23 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import moment from "moment/moment";
 import { MdDelete } from "react-icons/md";
 import { AiOutlineEdit } from "react-icons/ai";
 import { DeleteModal } from "../../delete-modal";
+import { useGetCustomer } from "../../../custom-hooks";
 
 export const CustomersTable = ({
   customersList,
   setEdit,
-  prePopulate,
   toggleCustomerModal,
+  setCustomerData
 }) => {
 
   const [deleteModal, setDeleteModal] = useState(false)
+  const [selectedCustomerId, setSelectedCustomerId] = useState(null);
+  const { isCustomerLoading } = useGetCustomer(selectedCustomerId, setCustomerData)
 
   const toggleCustomerDelete = () => {
     setDeleteModal(!deleteModal);
   };
 
-  // customersList?.map(({ name, email, address, date, _id }) => {
+  const prePopulate = (id) => {
+    setSelectedCustomerId(id)
+  }
+
   return customersList?.map(({ name, email, address, date, _id }) => {
     return (
       <div
@@ -36,6 +42,7 @@ export const CustomersTable = ({
         <div className="col-span-3 px-3 py-3 md:px-6 font-switzer">
           <p className="">{moment(date).format("LL")}</p>
         </div>
+        
         <div className="flex col-span-1 gap-1 py-3 sm:gap-2 ">
           <AiOutlineEdit
             onClick={() => {
@@ -49,7 +56,6 @@ export const CustomersTable = ({
           <MdDelete
             onClick={() => {
               setEdit(true);
-              // prePopulate(_id);
               toggleCustomerDelete();
             }}
             className="text-2xl"

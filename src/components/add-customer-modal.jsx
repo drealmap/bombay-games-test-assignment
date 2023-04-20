@@ -1,38 +1,43 @@
 import React from "react";
 import { AiOutlineDown } from "react-icons/ai";
 import { MidSpinner } from "./loader";
-import { useCreateCustomer } from "../custom-hooks";
+import { useCreateCustomer, useEditCustomer } from "../custom-hooks";
 
 export const AddCustomerModal = ({
   toggleModal,
   edit,
-  handleEditCustomer,
   customerData,
   setCustomerData,
-  loading,
 }) => {
+  const user = {
+    name: customerData.name,
+    email: customerData.email,
+    address: customerData.address,
+    high_score: customerData.highScore,
+    settings: {
+      language: customerData.language,
+      music_enabled: customerData.music === "False" ? false : true,
+      sound_enabled: customerData.sound === "False" ? false : true,
+    },
+  };
+  const { mutate, isCreateCustomerLoading } = useCreateCustomer(toggleModal);
+  const { editCustomer, isEditCustomerLoading } = useEditCustomer(
+    toggleModal,
+    user
+  );
 
-  const { mutate, isCreateCustomerLoading, } = useCreateCustomer()
+  const handleAddCustomer = () => {
+    mutate(user);
+    
+  };
 
-  const handleAddCustomer = (e) => {
-    e.preventDefault()
-    const user = {
-      name: customerData.name,
-      email: customerData.email,
-      address: customerData.address,
-      high_score: customerData.highScore,
-      settings: {
-        language: customerData.language,
-        music_enabled: customerData.music === "False" ? false : true,
-        sound_enabled: customerData.sound === "False" ? false : true,
-      },
-    };
-    mutate(user)
-  }
+  const handleEditCustomer = (userId) => {
+    editCustomer(userId);
+  };
 
   return (
     <div className="fixed top-0 bottom-0 left-0 right-0 w-screen h-screen ">
-      {loading || isCreateCustomerLoading ? (
+      {isEditCustomerLoading || isCreateCustomerLoading ? (
         <MidSpinner />
       ) : (
         <>
@@ -43,14 +48,10 @@ export const AddCustomerModal = ({
           ></div>
           <div className="absolute top-[50%] left-[50%] translate-x-[-50%] overflow-auto h-[80vh] lg:h-full -translate-y-[50%] w-[90vw] max-w-md">
             <form
-              onSubmit={
-                edit
-                  ? (e) => {
-                      e.preventDefault();
-                      handleEditCustomer(customerData._id);
-                    }
-                  : handleAddCustomer
-              }
+              onSubmit={(e) => {
+                e.preventDefault();
+                edit ? handleEditCustomer(customerData._id) : handleAddCustomer();
+              }}
               className="px-8 pt-6 pb-8 mb-4 bg-white rounded shadow-md"
             >
               <h2 className="mb-5 text-lg">
